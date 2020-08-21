@@ -1,0 +1,8 @@
+{
+  "name": "nodered-power",
+  "version": "1.0.0",
+  "main": "nodered-power.js",
+  "scripts": {
+    "start": "node nodered-power.js"
+  }
+}
