@@ -2,7 +2,7 @@ const http = require('http');
 const url = require('url');
 const fs = require('fs');
 
-const boolPath = '/mnt/user/appdata/scripts/';
+const boolPath = '/scripts/';
 let boolFile = 'prevent_shutdown.bool';
 
 http.createServer(function (req, res) {
@@ -98,7 +98,7 @@ http.createServer(function (req, res) {
             break;
         case '/readimmediate':
             console.log('Read boolean status');
-            boolFile = 'immediate_shutdown.bool';
+            boolFile = 'shutdown_now.bool';
             break;
         case '/toggle':
             console.log('Toggle');
@@ -123,7 +123,7 @@ http.createServer(function (req, res) {
                 res.end('Error: No new state provided');
                 return;
             }
-            boolFile = 'immediate_shutdown.bool';
+            boolFile = 'shutdown_now.bool';
             newValue = '1'==query.state ? '1':'0';
             
             update = true;

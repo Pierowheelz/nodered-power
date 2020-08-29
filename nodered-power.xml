@@ -34,7 +34,7 @@ Nodered power control for Server.
   </Volume>
   <Volume>
     <HostDir>/mnt/user/appdata/scripts</HostDir>
-    <ContainerDir>/mnt/user/appdata/scripts</ContainerDir>
+    <ContainerDir>/scripts</ContainerDir>
     <Mode>rw</Mode>
   </Volume>
 </Data>
