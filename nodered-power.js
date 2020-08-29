@@ -2,7 +2,8 @@ const http = require('http');
 const url = require('url');
 const fs = require('fs');
 
-const boolFile = '/mnt/user/appdata/scripts/prevent_shutdown.bool';
+const boolPath = '/mnt/user/appdata/scripts/';
+let boolFile = 'prevent_shutdown.bool';
 
 http.createServer(function (req, res) {
     let data = [];
@@ -86,23 +87,22 @@ http.createServer(function (req, res) {
     
     let remoteUrl = "";
     
-    
-    const contents = fs.readFileSync(boolFile, 'utf8').trim();
-    console.log('File contents: '+contents);
-    console.log( typeof contents );
-    let newValue = '1'==contents ? '1' : '0';
-    console.log('Current State: '+newValue);
-    
     let update = false;
+    let toggle = false;
+    
+    let newValue = '0';
     
     switch( path ){
         case '/read':
             console.log('Read boolean status');
             break;
+        case '/readimmediate':
+            console.log('Read boolean status');
+            boolFile = 'immediate_shutdown.bool';
+            break;
         case '/toggle':
             console.log('Toggle');
-            newValue = '1'==newValue ? '0':'1'; //invert
-            
+            toggle = true;
             update = true;
             break;
         case '/set':
@@ -116,6 +116,18 @@ http.createServer(function (req, res) {
             
             update = true;
             break;
+        case '/setimmediate':
+            console.log('Set Immediate');
+            if( typeof query.state == "undefined" || undefined == query.state ){
+                res.writeHead(401, {'Content-Type': 'text/plain'});
+                res.end('Error: No new state provided');
+                return;
+            }
+            boolFile = 'immediate_shutdown.bool';
+            newValue = '1'==query.state ? '1':'0';
+            
+            update = true;
+            break;
         default:
             console.log('invalid path');
             res.writeHead(401, {'Content-Type': 'text/plain'});
@@ -124,11 +136,21 @@ http.createServer(function (req, res) {
             break;
     }
     
-    if( update && contents !== newValue ){
+    const contents = fs.readFileSync(boolPath + boolFile, 'utf8').trim();
+    console.log('File contents: '+contents);
+    console.log( typeof contents );
+    let curValue = '1'==contents ? '1' : '0';
+    console.log('Current State: '+newValue);
+    
+    if( toggle ){
+        newValue = '1'==curValue ? '0':'1';
+    }
+    
+    if( update && curValue !== newValue ){
         //update the file
-        const result = fs.writeFileSync(boolFile, newValue+"\r\n");
+        const result = fs.writeFileSync(boolPath + boolFile, newValue+"\r\n");
     }
     
     res.writeHead(200, {'Content-Type': 'text/plain'});
     res.end(newValue);
-}).listen(8200);
+}).listen(8202);
