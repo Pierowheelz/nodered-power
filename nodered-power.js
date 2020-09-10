@@ -3,7 +3,6 @@ const url = require('url');
 const fs = require('fs');
 
 const boolPath = '/scripts/';
-let boolFile = 'prevent_shutdown.bool';
 
 http.createServer(function (req, res) {
     let data = [];
@@ -91,6 +90,7 @@ http.createServer(function (req, res) {
     let toggle = false;
     
     let newValue = '0';
+    let boolFile = 'prevent_shutdown.bool';
     
     switch( path ){
         case '/read':
