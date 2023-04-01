@@ -72,7 +72,28 @@ http.createServer(function (req, res) {
     console.log('Server upper: '+rangeUpperHours+':'+rangeUpperMinutes);
     
     let valid_request = false;
-    if( hours >= rangeLowerHours && minutes >= rangeLowerMinutes && hours <= rangeUpperHours && minutes <= rangeUpperMinutes ){
+    if(
+        hours >= rangeLowerHours &&
+        minutes >= rangeLowerMinutes &&
+        hours <= rangeUpperHours &&
+        minutes <= rangeUpperMinutes
+    ){
+        valid_request = true;
+    } else if (
+        hours >= rangeLowerHours &&
+        59 == rangeLowerMinutes &&
+        ( 0 == minutes || 1 == minutes ) &&
+        hours <= rangeUpperHours &&
+        minutes <= rangeUpperMinutes
+    ){
+        valid_request = true;
+    } else if (
+        hours >= rangeLowerHours &&
+        minutes >= rangeLowerMinutes &&
+        hours <= rangeUpperHours &&
+        0 == rangeUpperMinutes &&
+        ( 59 == minutes || 58 == minutes )
+    ){
         valid_request = true;
     }
     
