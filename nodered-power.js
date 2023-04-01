@@ -93,19 +93,19 @@ http.createServer(function (req, res) {
     let boolFile = 'prevent_shutdown.bool';
     
     switch( path ){
-        case '/read':
+        case '/read': // Read `prevent_shotdown` status (1=prevent_shutdown, 0=do_nothing)
             console.log('Read boolean status');
             break;
-        case '/readimmediate':
+        case '/readimmediate': // Read `immediate_shutdown` status (1=immediately_shutdown, 0=do_nothing)
             console.log('Read boolean status');
             boolFile = 'shutdown_now.bool';
             break;
-        case '/toggle':
+        case '/toggle': // Toggle `prevent_shotdown` status - DEPRECATED
             console.log('Toggle');
             toggle = true;
             update = true;
             break;
-        case '/set':
+        case '/set': // Set `prevent_shotdown` status (1=prevent_shutdown, 0=do_nothing)
             console.log('Set');
             if( typeof query.state == "undefined" || undefined == query.state ){
                 res.writeHead(401, {'Content-Type': 'text/plain'});
@@ -116,7 +116,7 @@ http.createServer(function (req, res) {
             
             update = true;
             break;
-        case '/setimmediate':
+        case '/setimmediate': // Set `immediate_shutdown` status (1=immediately_shutdown, 0=do_nothing)
             console.log('Set Immediate');
             if( typeof query.state == "undefined" || undefined == query.state ){
                 res.writeHead(401, {'Content-Type': 'text/plain'});
@@ -140,7 +140,7 @@ http.createServer(function (req, res) {
     console.log('File contents: '+contents);
     console.log( typeof contents );
     let curValue = '1'==contents ? '1' : '0';
-    console.log('Current State: '+newValue);
+    console.log('Current State: '+curValue);
     
     if( toggle ){
         newValue = '1'==curValue ? '0':'1';
@@ -149,8 +149,9 @@ http.createServer(function (req, res) {
     if( update && curValue !== newValue ){
         //update the file
         const result = fs.writeFileSync(boolPath + boolFile, newValue+"\r\n");
+        curValue = newValue;
     }
     
     res.writeHead(200, {'Content-Type': 'text/plain'});
-    res.end(newValue);
+    res.end(curValue);
 }).listen(8200);
