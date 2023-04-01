@@ -109,9 +109,10 @@ http.createServer(function (req, res) {
             const immeContents = fs.readFileSync(boolPath + 'shutdown_now.bool', 'utf8').trim();
             const immeCur = '1'==immeContents ? 1 : 0;
             
-            // res.writeHead(200, {'Content-Type': 'text/plain'});
-            // res.end(  );
-            res.status(200).send({prevent:prevCur,immediate:immeCur});
+            const jsonContent = JSON.stringify( {prevent:prevCur,immediate:immeCur} );
+            
+            res.writeHead(200, {'Content-Type': 'application/json'});
+            res.end( jsonContent );
             
             break;
         case '/toggle': // Toggle `prevent_shutdown` status - DEPRECATED
