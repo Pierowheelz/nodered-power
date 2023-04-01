@@ -93,19 +93,33 @@ http.createServer(function (req, res) {
     let boolFile = 'prevent_shutdown.bool';
     
     switch( path ){
-        case '/read': // Read `prevent_shotdown` status (1=prevent_shutdown, 0=do_nothing)
+        case '/read': // Read `prevent_shutdown` status (1=prevent_shutdown, 0=do_nothing)
             console.log('Read boolean status');
             break;
         case '/readimmediate': // Read `immediate_shutdown` status (1=immediately_shutdown, 0=do_nothing)
             console.log('Read boolean status');
             boolFile = 'shutdown_now.bool';
             break;
-        case '/toggle': // Toggle `prevent_shotdown` status - DEPRECATED
+        case '/readall': // Read both `prevent_shutdown` and `immediate_shutdown` status
+            console.log('Read ALL boolean status');
+            
+            const prevContents = fs.readFileSync(boolPath + 'prevent_shutdown.bool', 'utf8').trim();
+            const prevCur = '1'==prevContents ? 1 : 0;
+            
+            const immeContents = fs.readFileSync(boolPath + 'shutdown_now.bool', 'utf8').trim();
+            const immeCur = '1'==immeContents ? 1 : 0;
+            
+            // res.writeHead(200, {'Content-Type': 'text/plain'});
+            // res.end(  );
+            res.status(200).send({prevent:prevCur,immediate:immeCur});
+            
+            break;
+        case '/toggle': // Toggle `prevent_shutdown` status - DEPRECATED
             console.log('Toggle');
             toggle = true;
             update = true;
             break;
-        case '/set': // Set `prevent_shotdown` status (1=prevent_shutdown, 0=do_nothing)
+        case '/set': // Set `prevent_shutdown` status (1=prevent_shutdown, 0=do_nothing)
             console.log('Set');
             if( typeof query.state == "undefined" || undefined == query.state ){
                 res.writeHead(401, {'Content-Type': 'text/plain'});
